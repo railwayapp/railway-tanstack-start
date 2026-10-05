@@ -1,0 +1,307 @@
+@import 'tailwindcss' source('../');
+
+/* Theme is class-based: <html class="dark"> (dark is the default). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Railway brand tokens ──────────────────────────────────────────────
+   Taken from railway.com's marketing design system. Change these to
+   rebrand the whole app. */
+:root {
+  --canvas: #f1f0ef; /* "oatmeal" page background */
+  --surface: #fafafa;
+  --surface-raised: #ffffff;
+  --fg: #1c1a28;
+  --fg-muted: #545260;
+  --fg-subtle: #868593;
+  --border: #dcdce0;
+  --hairline: rgb(0 0 0 / 0.08);
+  --dot: rgb(0 0 0 / 0.09);
+
+  --accent: #59497a; /* primary buttons */
+  --accent-fg: #59497a; /* accent text & links */
+  --accent-strong: #59497a;
+  --accent-bg: #f2e9fb;
+
+  --success: #367859;
+  --success-bg: #dff1e9;
+  --success-border: #95d0b4;
+  --info: #5b8def;
+  --info-bg: #e8eefc;
+  --danger: #b53a37;
+
+  /* The departure board is always "night mode", like the real thing. */
+  --board: #0d0c14;
+  --board-row: #13111c;
+  --board-cell: #1e1c2a;
+  --board-ink: #f7f7f8;
+  --board-dim: #868593;
+  --board-time: #bf92ec;
+  --board-go: #42946e;
+}
+
+.dark {
+  --canvas: #13111c;
+  --surface: #181622;
+  --surface-raised: #1e1c2a;
+  --fg: #f7f7f8;
+  --fg-muted: #a6a5b2;
+  --fg-subtle: #868593;
+  --border: #33323e;
+  --hairline: rgb(255 255 255 / 0.1);
+  --dot: rgb(255 255 255 / 0.07);
+
+  --accent: #553f83;
+  --accent-fg: #bf92ec;
+  --accent-strong: #a667e4;
+  --accent-bg: #1e132a;
+
+  --success: #42946e;
+  --success-bg: #15231d;
+  --success-border: #26543f;
+  --info: #5b8def;
+  --info-bg: #0f1b33;
+  --danger: #e2625e;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-line: var(--border);
+  --color-hairline: var(--hairline);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-bg: var(--accent-bg);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-danger: var(--danger);
+  --color-board: var(--board);
+  --color-board-row: var(--board-row);
+  --color-board-cell: var(--board-cell);
+  --color-board-ink: var(--board-ink);
+  --color-board-dim: var(--board-dim);
+  --color-board-time: var(--board-time);
+  --color-board-go: var(--board-go);
+}
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'IBM Plex Serif', ui-serif, Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-glow: 0 4px 20px 0 #702ba140;
+  --shadow-dreamy: -8px 4px 16px rgba(104, 16, 216, 0.1),
+    8px -4px 16px rgba(205, 60, 201, 0.1);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-canvas text-fg font-sans;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  *,
+  ::after,
+  ::before {
+    border-color: var(--border);
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent-strong) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 2px;
+  }
+}
+
+@utility dot-grid {
+  background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-[15px] font-medium transition duration-200 ease-spring active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-accent text-white hover:brightness-115 dark:border dark:border-white/15;
+}
+@utility btn-secondary {
+  @apply btn border border-line bg-surface-raised text-fg hover:bg-surface;
+}
+@utility btn-ghost-light {
+  @apply btn border border-white/40 bg-black/25 text-white backdrop-blur-sm hover:bg-white/10;
+}
+
+@utility badge {
+  @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium;
+}
+
+@utility card {
+  @apply rounded-2xl border border-line bg-surface;
+}
+
+@utility field {
+  @apply w-full rounded-lg border border-line bg-surface-raised px-3.5 py-2.5 text-[15px] text-fg placeholder:text-fg-subtle transition outline-none focus:border-accent-strong focus:ring-3 focus:ring-accent-strong/20;
+}
+
+@utility eyebrow {
+  @apply font-mono text-xs font-medium tracking-[0.12em] text-fg-subtle uppercase;
+}
+
+@utility headline {
+  @apply font-serif font-medium tracking-[-0.02em] text-balance;
+}
+
+/* ─── Split-flap display ─────────────────────────────────────────────── */
+.flap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 1.05em;
+  height: 1.5em;
+  border-radius: 3px;
+  background: linear-gradient(
+    to bottom,
+    var(--board-cell) 0 49.5%,
+    #0b0a11 49.5% 50.5%,
+    color-mix(in oklab, var(--board-cell) 88%, black) 50.5%
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 1px 1px rgb(0 0 0 / 0.5);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  line-height: 1;
+}
+.flap[data-flipping='true'] {
+  animation: flap-tick 70ms linear;
+}
+@keyframes flap-tick {
+  0% {
+    transform: perspective(200px) rotateX(0);
+  }
+  50% {
+    transform: perspective(200px) rotateX(-70deg);
+    filter: brightness(0.7);
+  }
+  100% {
+    transform: perspective(200px) rotateX(0);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.pulse-dot {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.row-in {
+  animation: row-in 400ms var(--ease-spring) both;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-raised);
+  border-radius: 6px;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--hairline), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Hero diagram wires ─────────────────────────────────────────────── */
+@keyframes wire-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+.wire-flow {
+  animation: wire-flow 0.9s linear infinite;
+}
+@keyframes packet-down {
+  0% {
+    top: -4px;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: calc(100% - 3px);
+    opacity: 0;
+  }
+}
+@keyframes packet-up {
+  0% {
+    top: calc(100% - 3px);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: -4px;
+    opacity: 0;
+  }
+}
+.packet-down {
+  animation: packet-down 1.8s var(--ease-spring) infinite;
+}
+.packet-up {
+  animation: packet-up 1.8s var(--ease-spring) 0.9s infinite;
+  opacity: 0;
+}
