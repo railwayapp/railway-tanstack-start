@@ -1,8 +1,6 @@
 # TanStack Start on Railway
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/TEMPLATE_CODE?utm_medium=integration&utm_source=button&utm_campaign=tanstack-start)
-
-<!-- TODO: replace TEMPLATE_CODE once the Railway template is published -->
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/u3A7Mz?utm_medium=integration&utm_source=button&utm_campaign=tanstack-start)
 
 A full-stack [TanStack Start](https://tanstack.com/start) app with Postgres that shows the core features of Start 1.0, deployed on [Railway](https://railway.com).
 
@@ -145,6 +143,7 @@ You need Node 22.12+ and pnpm. Docker is optional: without it, point `DATABASE_U
 ```
 .
 ├── .railway/railway.ts          Railway infrastructure as code
+├── .railway/template-overview.md  the template's marketplace overview
 ├── drizzle/                     generated SQL migrations (committed)
 ├── scripts/migrate.mjs          pre-deploy: wait for Postgres, migrate, seed
 ├── public/                      static assets, hero images, og.jpg
