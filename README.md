@@ -1,6 +1,6 @@
 # TanStack Start on Railway
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/u3A7Mz?utm_medium=integration&utm_source=button&utm_campaign=tanstack-start)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/tanstack-start?utm_medium=integration&utm_source=button&utm_campaign=tanstack-start)
 
 A full-stack [TanStack Start](https://tanstack.com/start) app with Postgres that shows the core features of Start 1.0, deployed on [Railway](https://railway.com).
 
