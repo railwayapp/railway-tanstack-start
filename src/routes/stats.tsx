@@ -7,7 +7,7 @@ import {
   getHourlyActivity,
   getStatsSummary,
   getTopDestinations,
-} from '~/server/stats'
+} from '~/server/stats.functions'
 
 export const Route = createFileRoute('/stats')({
   loader: async () => ({

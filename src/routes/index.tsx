@@ -9,6 +9,8 @@ import { site } from '~/lib/site'
 const PREVIEW = { pageSize: 6 }
 
 export const Route = createFileRoute('/')({
+  // The page marks which departures this visitor posted, so it's private to them.
+  headers: () => ({ 'Cache-Control': 'private, no-store' }),
   // Runs on the server for the first request and on the client for
   // subsequent navigations. Both queries are fetched in parallel and
   // dehydrated into the HTML stream.

@@ -16,6 +16,8 @@ const searchSchema = z.object({
 })
 
 export const Route = createFileRoute('/board/')({
+  // The page marks which departures this visitor posted, so it's private to them.
+  headers: () => ({ 'Cache-Control': 'private, no-store' }),
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => search,
   loader: ({ context: { queryClient }, deps }) =>

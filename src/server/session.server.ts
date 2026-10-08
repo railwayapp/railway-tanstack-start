@@ -6,11 +6,19 @@ const DEV_SECRET = 'dev-only-secret-change-me-0123456789abcdef'
 
 // An anonymous, encrypted cookie session. No login: it just lets visitors
 // delete the departures they posted.
-export function useVisitorSession() {
-  const password = process.env.SESSION_SECRET ?? DEV_SECRET
-  if (password === DEV_SECRET && process.env.NODE_ENV === 'production') {
-    console.warn('SESSION_SECRET is not set — using an insecure default.')
+function sessionSecret() {
+  const secret = process.env.SESSION_SECRET
+  if (secret && secret.length >= 32) return secret
+  // The dev default is public, so a production cookie sealed with it could be
+  // forged. Fail loudly instead.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('SESSION_SECRET must be set to at least 32 characters.')
   }
+  return DEV_SECRET
+}
+
+export function useVisitorSession() {
+  const password = sessionSecret()
   return useSession<VisitorSession>({
     name: 'departures-session',
     password,

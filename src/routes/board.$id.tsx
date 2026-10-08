@@ -8,9 +8,11 @@ import { NotFound } from '~/components/NotFound'
 import { SplitFlap } from '~/components/SplitFlap'
 import { departureQuery } from '~/lib/queries'
 import { seo } from '~/lib/seo'
-import { deleteDeparture } from '~/server/departures'
+import { deleteDeparture } from '~/server/departures.functions'
 
 export const Route = createFileRoute('/board/$id')({
+  // The page marks which departures this visitor posted, so it's private to them.
+  headers: () => ({ 'Cache-Control': 'private, no-store' }),
   // Path params are parsed and typed: `id` is a number everywhere below.
   params: {
     parse: ({ id }) => {

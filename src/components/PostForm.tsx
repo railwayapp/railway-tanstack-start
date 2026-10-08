@@ -8,7 +8,7 @@ import {
   MAX_NAME,
   newDepartureSchema,
 } from '~/lib/destinations'
-import { createDeparture } from '~/server/departures'
+import { createDeparture } from '~/server/departures.functions'
 
 type ListData = {
   items: Array<Departure>

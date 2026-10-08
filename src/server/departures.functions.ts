@@ -1,6 +1,6 @@
 import { notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { getRequestHeader, getRequestIP } from '@tanstack/react-start/server'
+import { getRequestHeader, getRequestIP, setResponseHeader } from '@tanstack/react-start/server'
 import { and, count, desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { getDb, schema } from './db.server'
@@ -39,6 +39,9 @@ export const listDepartures = createServerFn({ method: 'GET' })
     }),
   )
   .handler(async ({ data }) => {
+    // Each item says whether this visitor posted it, so the response is
+    // private to them.
+    setResponseHeader('Cache-Control', 'private, no-store')
     const db = getDb()
     const where = data.dest
       ? eq(schema.departures.destination, data.dest)
@@ -67,6 +70,7 @@ export const listDepartures = createServerFn({ method: 'GET' })
 export const getDeparture = createServerFn({ method: 'GET' })
   .validator(z.object({ id: z.number().int().positive() }))
   .handler(async ({ data }) => {
+    setResponseHeader('Cache-Control', 'private, no-store')
     const [row] = await getDb()
       .select()
       .from(schema.departures)

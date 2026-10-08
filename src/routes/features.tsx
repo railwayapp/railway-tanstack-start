@@ -31,7 +31,7 @@ const SECTIONS: Array<Section> = [
     id: 'server-functions',
     title: 'Server functions',
     body: '`createServerFn` defines a function that always runs on the server but can be called from anywhere — loaders, components, event handlers. Input is validated with zod, and the return type flows straight to the caller. In the client bundle the handler is replaced with a fetch.',
-    file: 'src/server/departures.ts',
+    file: 'src/server/departures.functions.ts',
     code: `
 export const createDeparture = createServerFn({ method: 'POST' })
   .validator(newDepartureSchema)

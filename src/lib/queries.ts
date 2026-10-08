@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 import type { Destination } from './destinations'
-import { getDeparture, listDepartures } from '~/server/departures'
-import { getInfra } from '~/server/infra'
+import { getDeparture, listDepartures } from '~/server/departures.functions'
+import { getInfra } from '~/server/infra.functions'
 
 // Query options are shared by route loaders (prefetch during SSR) and
 // components (useSuspenseQuery), so data is fetched once on the server and

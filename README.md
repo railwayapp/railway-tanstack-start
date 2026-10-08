@@ -41,7 +41,7 @@ Each feature is used for a real job in the app, not as an isolated demo. The `/f
 
 | Feature | How the app uses it | Source |
 | --- | --- | --- |
-| **Server functions** | `createServerFn` with zod `.validator()` to create, list, read and delete departures. The client bundle gets an RPC stub instead of the handler. | [`src/server/departures.ts`](src/server/departures.ts) |
+| **Server functions** | `createServerFn` with zod `.validator()` to create, list, read and delete departures. The client bundle gets an RPC stub instead of the handler. | [`src/server/departures.functions.ts`](src/server/departures.functions.ts) |
 | **Type-safe routing** | File-based routes. The `$id` path param is parsed to a number in the route definition, so it's typed everywhere it's used. | [`src/routes/board.$id.tsx`](src/routes/board.$id.tsx) |
 | **Validated search params** | The `?dest=Tokyo&page=2` filter and pagination are validated with a zod schema and typed in every `Link`. | [`src/routes/board.index.tsx`](src/routes/board.index.tsx) |
 | **TanStack Query + SSR** | Loaders prefetch with `queryClient.query()`; `setupRouterSsrQueryIntegration` passes the data from server to browser. Posting uses an optimistic mutation with rollback. | [`src/router.tsx`](src/router.tsx), [`src/lib/queries.ts`](src/lib/queries.ts), [`src/components/PostForm.tsx`](src/components/PostForm.tsx) |
@@ -102,7 +102,7 @@ The template provisions two services:
 | Variable | Set by | Purpose |
 | --- | --- | --- |
 | `DATABASE_URL` | Template: `${{Postgres.DATABASE_URL}}` | Connection string over the private network |
-| `SESSION_SECRET` | Template: `${{secret(32)}}` | Encrypts the session cookie (32+ characters) |
+| `SESSION_SECRET` | Template: `${{secret(32)}}` | Encrypts the session cookie (32+ characters). Production refuses to start sessions without it. |
 | `RAILWAY_*` | Railway | Shown on the infra card: region, deployment, replica, service, environment, and commit for GitHub deploys ([reference](https://docs.railway.com/variables/reference#railway-provided-variables)) |
 
 ### Infrastructure as code
@@ -161,9 +161,9 @@ You need Node 22.12+ and pnpm. Docker is optional: without it, point `DATABASE_U
     │   ├── features.tsx         /features    (prerendered)
     │   └── api/                 /api/health, /api/departures
     ├── server/
-    │   ├── departures.ts        server functions (client-importable)
-    │   ├── infra.ts             server function behind the infra card and diagram
-    │   ├── stats.ts             server functions for /stats
+    │   ├── departures.functions.ts  server functions (client-importable)
+    │   ├── infra.functions.ts   server function behind the infra card and diagram
+    │   ├── stats.functions.ts   server functions for /stats
     │   ├── middleware.ts        request + function middleware
     │   ├── schema.ts            Drizzle schema
     │   ├── db.server.ts         Postgres pool (server-only)
@@ -179,7 +179,7 @@ You need Node 22.12+ and pnpm. Docker is optional: without it, point `DATABASE_U
 - **Branding.** Colors are CSS variables at the top of [`src/styles/app.css`](src/styles/app.css), mapped into Tailwind with `@theme`. The site name and links are in [`src/lib/site.ts`](src/lib/site.ts).
 - **Schema changes.** Edit [`src/server/schema.ts`](src/server/schema.ts), run `pnpm db:generate`, and commit the new file in `drizzle/`. The next deploy applies it before traffic switches.
 - **Remove the demo.** Delete `src/routes/board*`, `src/routes/stats.tsx`, and the departures and stats code in `src/server/`. Keep `__root.tsx`, `router.tsx`, `start.ts`, `api/health.ts` and `db.server.ts`.
-- **Remove the simulated latency.** `simulateSlowQuery` in [`src/server/stats.ts`](src/server/stats.ts) only exists so you can see streaming happen.
+- **Remove the simulated latency.** `simulateSlowQuery` in [`src/server/stats.functions.ts`](src/server/stats.functions.ts) only exists so you can see streaming happen.
 - **Scaling out.** The rate limiter keeps its counts in memory, so each replica counts separately. Move it to Redis if you need a shared limit. It identifies clients by `X-Real-IP`, which Railway's edge sets to the client's address.
 
 ## Notes for maintainers
@@ -188,5 +188,5 @@ You need Node 22.12+ and pnpm. Docker is optional: without it, point `DATABASE_U
 - **Prerendering goes through Nitro.** With `tanstackStart({ prerender })` plus `nitro()`, Start writes the prerendered HTML after Nitro has sealed its public-asset manifest, so the page is never served statically ([TanStack/router#7473](https://github.com/TanStack/router/issues/7473)). This template uses `nitro({ prerender: { routes: ['/features'] } })` instead. Switch back to the Start option once that issue is fixed.
 - **Nitro is pinned** to an exact v3 beta (`3.0.260903-beta`) because the `nitro/vite` plugin is still under active development.
 - **CSRF is explicit.** Defining `src/start.ts` replaces Start's default CSRF middleware, so [`src/start.ts`](src/start.ts) registers `createCsrfMiddleware({ filter: ctx => ctx.handlerType === 'serverFn' })`. It works behind Railway's proxy as-is, with no `origin` override needed.
-- **Server function files.** Wrappers live in `src/server/*.ts`, and server-only helpers in `*.server.ts`. The docs also suggest a `*.functions.ts` naming convention; either works.
+- **Server function files.** Following the Start docs, `createServerFn` wrappers live in `src/server/*.functions.ts` and import server-only helpers from `*.server.ts` directly. Start replaces the handlers with RPC stubs in the client bundle, and import protection fails the build if a `.server.ts` file reaches client code.
 - **Stack.** React 19, Vite 8, Nitro 3 (beta), Tailwind CSS 4, TanStack Query 5, Drizzle ORM with `postgres.js`, zod 4, TypeScript 7.

@@ -11,6 +11,8 @@ import { seo } from '~/lib/seo'
 const KIOSK = { pageSize: 14 }
 
 export const Route = createFileRoute('/board/live')({
+  // The page marks which departures this visitor posted, so it's private to them.
+  headers: () => ({ 'Cache-Control': 'private, no-store' }),
   // Selective SSR: the loader runs on the server (so data arrives with the
   // HTML), but the component renders only in the browser. It sizes itself
   // to the screen and uses the Fullscreen API, neither of which exist on
